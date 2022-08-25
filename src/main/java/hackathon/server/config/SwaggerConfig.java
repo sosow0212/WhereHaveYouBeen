@@ -28,7 +28,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.OAS_30)
                 .apiInfo(apiInfo())
                 .select()
-                    .apis(RequestHandlerSelectors.basePackage("yoon.community.controller"))
+                    .apis(RequestHandlerSelectors.basePackage("hackathon.server.controller"))
                     .paths(PathSelectors.any())
                 .build()
                 .securityContexts(Arrays.asList(securityContext()))

@@ -57,6 +57,23 @@ public class ExceptionAdvice {
         return Response.failure(400, e.getBindingResult().getFieldError().getDefaultMessage());
     }
 
+    // 400 에러
+    // 태그 선택 한계(4개) 위반시 에러
+    @ExceptionHandler(TagLimitException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Response tagLimitException() {
+        return Response.failure(401, "태그는 1개부터 4개까지 선택 가능합니다.");
+    }
+
+    // 400 에러
+    // 태그가 없을 때 발생
+    @ExceptionHandler(TagIsEmptyException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Response tagIsEmptyException() {
+        return Response.failure(401, "현재 적용된 태그가 없습니다.");
+    }
+
+
     // 401 응답
     // 아이디 혹은 비밀번호 오류시
     @ExceptionHandler(LoginFailureException.class)
@@ -121,5 +138,21 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.CONFLICT)
     public Response memberPhoneAlreadyExistsException(MemberPhoneAlreadyExistsException e) {
         return Response.failure(409, e.getMessage() + "은 중복된 번호 입니다.");
+    }
+
+    // 409 응답
+    // 유저가 이미 태그를 처음에 선택한 경우 (재생성 하는 경우)
+    @ExceptionHandler(UserCreateTagAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Response userCreateTagAlreadyExistsException() {
+        return Response.failure(409, "이미 첫 태그를 선택하셨습니다. 수정창에서 바꿔주세요.");
+    }
+
+    // 409 응답
+    // 태그 수정 오류 (중복 혹은 태그 선택 개수 초과)
+    @ExceptionHandler(TagAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Response tagAlreadyExistException() {
+        return Response.failure(400, "수정이 올바른지 다시 확인해주세요.");
     }
 }

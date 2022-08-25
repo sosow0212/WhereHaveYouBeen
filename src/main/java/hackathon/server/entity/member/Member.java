@@ -34,17 +34,21 @@ public class Member extends EntityDate {
     @Column(nullable = false, unique = true, length = 20)
     private String phone;
 
+    @Column(nullable = false, length = 50)
+    private String address;
+
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
     @Builder
-    public Member(String username, String password, String name, String nickname, String email, String phone, Authority authority) {
+    public Member(String username, String password, String name, String nickname, String email, String phone, String address, Authority authority) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.nickname = nickname;
         this.email = email;
         this.phone = phone;
+        this.address = address;
         this.authority = authority;
     }
 }

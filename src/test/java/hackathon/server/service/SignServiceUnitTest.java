@@ -52,7 +52,7 @@ public class SignServiceUnitTest {
     @DisplayName("유저 회원가입 서비스")
     void userSignupTest() {
         // given
-        SignupRequestDto req = new SignupRequestDto("user", "user123!", "이름", "닉네임", "user@test.com", "010-1111-1111");
+        SignupRequestDto req = new SignupRequestDto("user", "user123!", "이름", "닉네임", "user@test.com" , "010-1111-1111", "경기도");
 
         // when
         signService.userSignup(req);
@@ -66,7 +66,7 @@ public class SignServiceUnitTest {
     @DisplayName("가이드 회원가입 서비스")
     void guideSignupTest() {
         // given
-        SignupRequestDto req = new SignupRequestDto("user", "user123!", "이름", "닉네임", "user@test.com", "010-1111-1111");
+        SignupRequestDto req = new SignupRequestDto("user", "user123!", "이름", "닉네임", "user@test.com" , "010-1111-1111", "경기도");
 
         // when
         signService.guideSignup(req);

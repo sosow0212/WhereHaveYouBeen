@@ -46,6 +46,10 @@ public class SignupRequestDto {
     @NotBlank(message = "전화번호를 입력해주세요.")
     private String phone;
 
+    @ApiModelProperty(value = "주소", notes = "주소를 입력해주세요.", required = true, example = "경기도 용인시 ~")
+    @NotBlank(message = "주소를 입력해주세요.")
+    private String address;
+
 
 
 }

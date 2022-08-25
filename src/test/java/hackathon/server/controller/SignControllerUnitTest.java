@@ -45,7 +45,7 @@ public class SignControllerUnitTest {
     @DisplayName("유저 회원가입")
     void userSignupTest() throws Exception {
         // given
-        SignupRequestDto req = new SignupRequestDto("user", "user123!", "이름", "닉네임", "user@test.com", "010-1111-1111");
+        SignupRequestDto req = new SignupRequestDto("user", "user123!", "이름", "닉네임", "user@test.com" , "010-1111-1111", "경기도");
 
         // when
         mockMvc.perform(
@@ -62,7 +62,7 @@ public class SignControllerUnitTest {
     @DisplayName("가이드 회원가입")
     void guideSignupTest() throws Exception {
         // given
-        SignupRequestDto req = new SignupRequestDto("user", "user123!", "이름", "닉네임", "user@test.com", "010-1111-1111");
+        SignupRequestDto req = new SignupRequestDto("user", "user123!", "이름", "닉네임", "user@test.com" , "010-1111-1111", "경기도");
 
         // when
         mockMvc.perform(
@@ -117,7 +117,7 @@ public class SignControllerUnitTest {
     void ignoreNullValueInJsonResponseTest() throws Exception {
         // 응답결과로 반환되는 JSON 문자열이 올바르게 제거되는지 검증
         // given
-        SignupRequestDto req = new SignupRequestDto("user", "user123!", "이름", "닉네임", "user@test.com", "010-1111-1111");
+        SignupRequestDto req = new SignupRequestDto("user", "user123!", "이름", "닉네임", "user@test.com" , "010-1111-1111", "경기도");
 
         // when, then
         mockMvc.perform(

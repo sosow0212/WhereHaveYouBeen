@@ -41,6 +41,7 @@ public class SignService {
                 .name(req.getName())
                 .nickname(req.getNickname())
                 .phone(req.getPhone())
+                .address(req.getAddress())
                 .authority(Authority.ROLE_USER)
                 .build();
 
@@ -58,6 +59,7 @@ public class SignService {
                 .name(req.getName())
                 .nickname(req.getNickname())
                 .phone(req.getPhone())
+                .address(req.getAddress())
                 .authority(Authority.ROLE_GUIDE)
                 .build();
 

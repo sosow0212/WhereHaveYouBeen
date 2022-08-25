@@ -14,6 +14,7 @@ public class MemberFactory {
                 .name("이름")
                 .nickname("닉네임")
                 .phone("010-1111-1111")
+                .address("경기도~")
                 .build();
 
         return member;
@@ -28,6 +29,7 @@ public class MemberFactory {
                 .name("이름")
                 .nickname("닉네임")
                 .phone("010-1111-1111")
+                .address("경기도~")
                 .build();
 
         return member;

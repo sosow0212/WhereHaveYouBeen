@@ -77,9 +77,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/image/**").permitAll() // images
                 .antMatchers("/api/sign-up/**", "/api/sign-in", "/api/reissue").permitAll() // auth
 
-                .antMatchers(HttpMethod.GET, "/api/tags").access("hasRole('ROLE_USER' )")
-                .antMatchers(HttpMethod.POST, "/api/tags").access("hasRole('ROLE_USER')")
-                .antMatchers(HttpMethod.PUT, "/api/tags").access("hasRole('ROLE_USER')")
+                .antMatchers(HttpMethod.GET, "/api/tags").access("hasRole('ROLE_USER') or hasRole('ROLE_GUIDE') or hasRole('ROLE_ADMIN')")
+                .antMatchers(HttpMethod.POST, "/api/tags").access("hasRole('ROLE_USER') or hasRole('ROLE_GUIDE') or hasRole('ROLE_ADMIN')")
+                .antMatchers(HttpMethod.PUT, "/api/tags").access("hasRole('ROLE_USER') or hasRole('ROLE_GUIDE') or hasRole('ROLE_ADMIN')")
                 .antMatchers(HttpMethod.GET, "/api/tags/{id}").access("hasRole('ROLE_USER') or hasRole('ROLE_GUIDE') or hasRole('ROLE_ADMIN')")
 
 

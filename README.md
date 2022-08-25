@@ -1,12 +1,20 @@
 <!--Header-->
 # 1. Project
-- Project name : **어디까지 가봤니?**
+- Project name : **어디까지_가봤니?**
 - Develop Period : **2022/08/23 ~**
 ---
+
 # 2. Project Info
-- Auth
+- 관광지 매칭 플랫폼 '어디까지 가봤니?' 서비스의 API 서버입니다.
+- K-해커톤 최종 결선 프로젝트입니다.
 ---
-# 3. Team Member
+
+# 3. API
+- Auth
+- Tag
+---
+
+# 4. Team Member
 Backend : [이재윤](https://github.com/sosow0212)
 
 Frontend : [임학수](https://github.com/harksu)
@@ -15,15 +23,16 @@ Frontend : [최원유](https://github.com/ChoiWonYu)
 
 Data / ML : [허찬영]()
 
-
 ---
-# 4. version
+
+# 5. version
 - Java11
 - Gradle
 - Jar
 - Spring Boot 2.7.3
 ---
-# 5. Convention
+
+# 6. Convention
 | **Git Convention** |
 ```text
 Git Convention

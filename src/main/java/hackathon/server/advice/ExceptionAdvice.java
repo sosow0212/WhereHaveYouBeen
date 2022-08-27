@@ -108,6 +108,14 @@ public class ExceptionAdvice {
     }
 
 
+    // 404 응답
+    // 상품을 찾을 수 없음
+    @ExceptionHandler(ProductNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response productNotFoundException() {
+        return Response.failure(404, "요청한 상품을 찾을 수 없습니다.");
+    }
+
     // 409 응답
     // username 중복
     @ExceptionHandler(MemberUsernameAlreadyExistsException.class)

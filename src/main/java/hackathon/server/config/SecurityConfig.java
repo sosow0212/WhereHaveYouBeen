@@ -82,6 +82,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/api/tags").access("hasRole('ROLE_USER') or hasRole('ROLE_GUIDE') or hasRole('ROLE_ADMIN')")
                 .antMatchers(HttpMethod.GET, "/api/tags/{id}").access("hasRole('ROLE_USER') or hasRole('ROLE_GUIDE') or hasRole('ROLE_ADMIN')")
 
+                .antMatchers(HttpMethod.POST, "/api/products").access("hasRole('ROLE_GUIDE')")
+                .antMatchers(HttpMethod.GET, "/api/products").access("hasRole('ROLE_USER') or hasRole('ROLE_GUIDE') or hasRole('ROLE_ADMIN')")
+                .antMatchers(HttpMethod.GET, "/api/products/{id}").access("hasRole('ROLE_USER') or hasRole('ROLE_GUIDE') or hasRole('ROLE_ADMIN')")
+                .antMatchers(HttpMethod.PUT, "/api/products/{id}").access("hasRole('ROLE_GUIDE')")
+                .antMatchers(HttpMethod.DELETE, "/api/products/{id}").access("hasRole('ROLE_GUIDE')")
+
 
                 .anyRequest().hasAnyRole("ROLE_ADMIN")
 //                .anyRequest().authenticated() // 나머지는 전부 인증 필요

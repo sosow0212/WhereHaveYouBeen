@@ -1,12 +1,14 @@
 package hackathon.server.entity.member;
 
 import hackathon.server.entity.common.EntityDate;
+import hackathon.server.entity.tag.Tag;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -15,6 +17,9 @@ public class Member extends EntityDate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<Tag> tags;
 
     @Column(nullable = false, unique = true, length = 30)
     private String username;
@@ -37,6 +42,9 @@ public class Member extends EntityDate {
     @Column(nullable = false, length = 50)
     private String address;
 
+    @Column(nullable = false)
+    private int money;
+
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
@@ -50,5 +58,6 @@ public class Member extends EntityDate {
         this.phone = phone;
         this.address = address;
         this.authority = authority;
+        this.money = 0;
     }
 }

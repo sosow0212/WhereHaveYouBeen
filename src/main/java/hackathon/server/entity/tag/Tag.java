@@ -1,5 +1,6 @@
 package hackathon.server.entity.tag;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import hackathon.server.entity.common.EntityDate;
 import hackathon.server.entity.member.Member;
 import lombok.*;
@@ -20,6 +21,7 @@ public class Tag extends EntityDate {
     @Column(nullable = false)
     private String name; // 태그명
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @OnDelete(action = OnDeleteAction.CASCADE)

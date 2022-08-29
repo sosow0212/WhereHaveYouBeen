@@ -64,8 +64,7 @@ public class MatchController {
     public Response cancelledMatchByUser(@ApiParam(value = "매치 id", required = true) @PathVariable("matchId") Long matchId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = memberRepository.findByUsername(authentication.getName()).orElseThrow(MemberNotFoundException::new);
-        matchService.cancelledMatchByUser(matchId, member);
-        return Response.success("가이드에게 매칭 취소 요청 완료");
+        return Response.success(matchService.cancelledMatchByUser(matchId, member));
     }
 
     @ApiOperation(value = "가이드가 매칭 취소 요청", tags = "가이드가 매칭을 취소 요청합니다.")
@@ -74,8 +73,6 @@ public class MatchController {
     public Response cancelledMatchByGuide(@ApiParam(value = "매치 id", required = true) @PathVariable("matchId") Long matchId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = memberRepository.findByUsername(authentication.getName()).orElseThrow(MemberNotFoundException::new);
-        matchService.cancelledMatchByGuide(matchId, member);
-        return Response.success("가이드에게 매칭 취소 요청 완료");
+        return Response.success(matchService.cancelledMatchByGuide(matchId, member));
     }
-
 }

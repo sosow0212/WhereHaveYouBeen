@@ -73,6 +73,14 @@ public class ExceptionAdvice {
         return Response.failure(401, "현재 적용된 태그가 없습니다.");
     }
 
+    // 400 에러
+    // 유저 돈 부족
+    @ExceptionHandler(UserLackOfMoneyException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Response userLackOfMoneyException() {
+        return Response.failure(401, "결제 할 금액이 부족합니다.");
+    }
+
 
     // 401 응답
     // 아이디 혹은 비밀번호 오류시
@@ -115,6 +123,15 @@ public class ExceptionAdvice {
     public Response productNotFoundException() {
         return Response.failure(404, "요청한 상품을 찾을 수 없습니다.");
     }
+
+    // 404 응답
+    // 매칭을 찾을 수 없음
+    @ExceptionHandler(MatchingNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response matchingNotFoundException() {
+        return Response.failure(404, "요청한 매칭을 찾을 수 없습니다.");
+    }
+
 
     // 409 응답
     // username 중복
@@ -163,4 +180,13 @@ public class ExceptionAdvice {
     public Response tagAlreadyExistException() {
         return Response.failure(400, "수정이 올바른지 다시 확인해주세요.");
     }
+
+    // 409 응답
+    // 이미 유저와 상품이 매치된 경우
+    @ExceptionHandler(AlreadyMatchedUserAndProduct.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Response alreadyMatchedUserAndProduct() {
+        return Response.failure(400, "이미 매칭이 신청되었습니다.");
+    }
+
 }

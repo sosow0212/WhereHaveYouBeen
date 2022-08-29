@@ -60,4 +60,8 @@ public class Member extends EntityDate {
         this.authority = authority;
         this.money = 0;
     }
+    
+    public void setMoney(int money) {
+        this.money = money;
+    }
 }

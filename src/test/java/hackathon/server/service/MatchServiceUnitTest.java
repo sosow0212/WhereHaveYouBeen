@@ -3,6 +3,7 @@ package hackathon.server.service;
 import hackathon.server.entity.matching.Matching;
 import hackathon.server.entity.member.Member;
 import hackathon.server.entity.product.Product;
+import hackathon.server.repository.HistoryRepository;
 import hackathon.server.repository.match.MatchRepository;
 import hackathon.server.repository.product.ProductRepository;
 import hackathon.server.service.match.MatchService;
@@ -35,6 +36,9 @@ public class MatchServiceUnitTest {
 
     @Mock
     ProductRepository productRepository;
+
+    @Mock
+    HistoryRepository historyRepository;
 
     @Test
     @DisplayName("매치 생성")
@@ -111,6 +115,7 @@ public class MatchServiceUnitTest {
 
         // then
         assertThat(result).isEqualTo("매칭이 종료되었습니다.");
+        verify(historyRepository).save(any());
     }
 
 
@@ -131,6 +136,7 @@ public class MatchServiceUnitTest {
 
         // then
         assertThat(result).isEqualTo("매칭이 종료되었습니다.");
+        verify(historyRepository).save(any());
     }
 
 

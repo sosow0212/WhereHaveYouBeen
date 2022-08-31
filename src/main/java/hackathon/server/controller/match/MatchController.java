@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Api(value = "Match Controller", tags = "Tag")
+@Api(value = "Match Controller", tags = "Match")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
@@ -27,7 +27,7 @@ public class MatchController {
 
     // 매칭 보기는 유저 페이지에서 확인
 
-    @ApiOperation(value = "유저의 매칭 신청", tags = "관광객이 매칭을 신청합니다.")
+    @ApiOperation(value = "유저의 매칭 신청", notes = "관광객이 매칭을 신청합니다.")
     @PostMapping("/matches/{productId}")
     @ResponseStatus(HttpStatus.CREATED)
     public Response createMatch(@ApiParam(value = "상품 id", required = true) @PathVariable("productId") Long productId) {
@@ -38,7 +38,7 @@ public class MatchController {
         return Response.success("매칭 완료");
     }
 
-    @ApiOperation(value = "관광객이 거래 완료 요청", tags = "관광객이 거래 완료 요청을 합니다.")
+    @ApiOperation(value = "관광객이 거래 완료 요청", notes = "관광객이 거래 완료 요청을 합니다.")
     @PostMapping("/matches/users/{matchId}")
     @ResponseStatus(HttpStatus.OK)
     public Response finishedByUser(@ApiParam(value = "매치 id", required = true) @PathVariable("matchId") Long matchId) {
@@ -48,7 +48,7 @@ public class MatchController {
         return Response.success(matchService.finishedByUser(matchId, member));
     }
 
-    @ApiOperation(value = "가이드가 거래 완료 요청", tags = "유저가 거래 완료 요청을 합니다.")
+    @ApiOperation(value = "가이드가 거래 완료 요청", notes = "유저가 거래 완료 요청을 합니다.")
     @PostMapping("/matches/guides/{matchId}")
     @ResponseStatus(HttpStatus.OK)
     public Response finishedByGuide(@ApiParam(value = "매치 id", required = true) @PathVariable("matchId") Long matchId) {
@@ -58,7 +58,7 @@ public class MatchController {
         return Response.success(matchService.finishedByGuide(matchId, member));
     }
 
-    @ApiOperation(value = "관광객이 매칭 취소 요청", tags = "관광객이 매칭을 취소 요청합니다.")
+    @ApiOperation(value = "관광객이 매칭 취소 요청", notes = "관광객이 매칭을 취소 요청합니다.")
     @DeleteMapping("/matches/users/{matchId}")
     @ResponseStatus(HttpStatus.OK)
     public Response cancelledMatchByUser(@ApiParam(value = "매치 id", required = true) @PathVariable("matchId") Long matchId) {
@@ -67,7 +67,7 @@ public class MatchController {
         return Response.success(matchService.cancelledMatchByUser(matchId, member));
     }
 
-    @ApiOperation(value = "가이드가 매칭 취소 요청", tags = "가이드가 매칭을 취소 요청합니다.")
+    @ApiOperation(value = "가이드가 매칭 취소 요청", notes = "가이드가 매칭을 취소 요청합니다.")
     @DeleteMapping("/matches/guides/{matchId}")
     @ResponseStatus(HttpStatus.OK)
     public Response cancelledMatchByGuide(@ApiParam(value = "매치 id", required = true) @PathVariable("matchId") Long matchId) {

@@ -1,9 +1,11 @@
 package hackathon.server.service.match;
 
+import hackathon.server.entity.history.History;
 import hackathon.server.entity.matching.Matching;
 import hackathon.server.entity.member.Member;
 import hackathon.server.entity.product.Product;
 import hackathon.server.exception.*;
+import hackathon.server.repository.HistoryRepository;
 import hackathon.server.repository.match.MatchRepository;
 import hackathon.server.repository.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MatchService {
     private final MatchRepository matchRepository;
     private final ProductRepository productRepository;
+    private final HistoryRepository historyRepository;
 
     @Transactional
     public void createMatch(Long productId, Member user) {
@@ -46,6 +49,9 @@ public class MatchService {
             Member guide = match.getGuide();
             guide.setMoney(guide.getMoney() + match.getTempMoney());
             matchRepository.delete(match);
+
+            History history = new History(user, guide, match.getProduct());
+            historyRepository.save(history);
             return "매칭이 종료되었습니다.";
         }
 
@@ -60,6 +66,9 @@ public class MatchService {
         if(match.isFinishedMatch()) {
             guide.setMoney(guide.getMoney() + match.getTempMoney());
             matchRepository.delete(match);
+
+            History history = new History(match.getUser(), guide, match.getProduct());
+            historyRepository.save(history);
             return "매칭이 종료되었습니다.";
         }
 

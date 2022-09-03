@@ -59,17 +59,17 @@ public class HistoryControllerUnitTest {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         given(memberRepository.findByUsername(authentication.getName())).willReturn(Optional.of(member));
 
-        ReviewCreateRequestDto req = new ReviewCreateRequestDto("리뷰 내용", 5);
+        ReviewCreateRequestDto req = new ReviewCreateRequestDto(1L,"리뷰 내용", 5);
 
         // when
         mockMvc.perform(
-                post("/api/histories/{historyId}", id)
+                post("/api/histories")
                         .content(objectMapper.writeValueAsString(req))
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isCreated());
 
         // then
-        verify(historyService).create(id, req, member);
+        verify(historyService).create(req, member);
     }
 
     @Test

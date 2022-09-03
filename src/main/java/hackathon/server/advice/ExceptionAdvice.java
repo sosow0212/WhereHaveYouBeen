@@ -132,6 +132,14 @@ public class ExceptionAdvice {
         return Response.failure(404, "요청한 매칭을 찾을 수 없습니다.");
     }
 
+    // 404 응답
+    // 거래내역을 찾을 수 없음
+    @ExceptionHandler(HistoryNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response historyNotFoundException() {
+        return Response.failure(404, "요청한 거래내역을 찾을 수 없습니다.");
+    }
+
 
     // 409 응답
     // username 중복
@@ -178,7 +186,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(TagAlreadyExistException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Response tagAlreadyExistException() {
-        return Response.failure(400, "수정이 올바른지 다시 확인해주세요.");
+        return Response.failure(409, "수정이 올바른지 다시 확인해주세요.");
     }
 
     // 409 응답
@@ -186,7 +194,15 @@ public class ExceptionAdvice {
     @ExceptionHandler(AlreadyMatchedUserAndProduct.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Response alreadyMatchedUserAndProduct() {
-        return Response.failure(400, "이미 매칭이 신청되었습니다.");
+        return Response.failure(409, "이미 매칭이 신청되었습니다.");
+    }
+
+    // 409 응답
+    // 이미 구매내역을 작성한 경우
+    @ExceptionHandler(AlreadyReviewWritenException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Response alreadyReviewWritenException() {
+        return Response.failure(409, "이미 리뷰를 작성하셨습니다.");
     }
 
 }

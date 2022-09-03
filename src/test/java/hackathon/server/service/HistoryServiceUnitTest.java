@@ -41,15 +41,14 @@ public class HistoryServiceUnitTest {
     @DisplayName("리뷰 작성")
     public void createTest() {
         // given
-        Long historyId = 1L;
-        ReviewCreateRequestDto req = new ReviewCreateRequestDto("리뷰 내용", 5);
+        ReviewCreateRequestDto req = new ReviewCreateRequestDto(3L, "리뷰 내용", 5);
         Member member = createUser();
         History history = createHistory(member, createGuide());
 
-        given(historyRepository.findById(historyId)).willReturn(Optional.of(history));
+        given(historyRepository.findById(req.getHistoryId())).willReturn(Optional.of(history));
 
         // when
-        historyService.create(historyId, req, member);
+        historyService.create(req, member);
 
         // then
         verify(reviewRepository).save(any());

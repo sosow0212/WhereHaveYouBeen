@@ -9,12 +9,17 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @ApiOperation(value = "리뷰 생성 요청")
 public class ReviewCreateRequestDto {
+
+    @ApiModelProperty(value = "history Id", notes = "history Id 값을 입력해주세요.", required = true, example = "2")
+    @NotNull(message = "history Id 값을 입력해주세요.")
+    private Long historyId;
 
     @ApiModelProperty(value = "리뷰 내용", notes = "리뷰 내용을 입력해주세요.", required = true, example = "관광지 추천을 아주 잘해주세요.")
     @NotBlank(message = "리뷰 내용을 입력해주세요.")

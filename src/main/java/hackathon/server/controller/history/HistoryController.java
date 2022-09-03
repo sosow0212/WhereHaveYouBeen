@@ -27,12 +27,12 @@ public class HistoryController {
     private final MemberRepository memberRepository;
 
     @ApiOperation(value = "리뷰 작성", notes = "리뷰를 작성합니다.")
-    @PostMapping("/histories/{historyId}")
+    @PostMapping("/histories")
     @ResponseStatus(HttpStatus.CREATED)
-    public Response create(@ApiParam(value = "history id", required = true) @PathVariable("historyId") Long id, @Valid @RequestBody ReviewCreateRequestDto req) {
+    public Response create(@Valid @RequestBody ReviewCreateRequestDto req) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = memberRepository.findByUsername(authentication.getName()).orElseThrow(MemberNotFoundException::new);
-        historyService.create(id, req, member);
+        historyService.create(req, member);
         return Response.success();
     }
 

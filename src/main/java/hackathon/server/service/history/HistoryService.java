@@ -27,7 +27,8 @@ public class HistoryService {
     private final HistoryRepository historyRepository;
 
     @Transactional
-    public void create(Long historyId, ReviewCreateRequestDto req, Member member) {
+    public void create(ReviewCreateRequestDto req, Member member) {
+        Long historyId = req.getHistoryId();
         History history = historyRepository.findById(historyId).orElseThrow(HistoryNotFoundException::new);
         Product product = history.getProduct();
 

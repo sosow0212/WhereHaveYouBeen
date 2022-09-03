@@ -3,7 +3,7 @@ package hackathon.server.service;
 import hackathon.server.entity.matching.Matching;
 import hackathon.server.entity.member.Member;
 import hackathon.server.entity.product.Product;
-import hackathon.server.repository.HistoryRepository;
+import hackathon.server.repository.history.HistoryRepository;
 import hackathon.server.repository.match.MatchRepository;
 import hackathon.server.repository.product.ProductRepository;
 import hackathon.server.service.match.MatchService;

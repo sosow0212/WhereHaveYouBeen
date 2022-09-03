@@ -94,6 +94,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "/api/matches/users/{productId}").access("hasRole('ROLE_USER')")
                 .antMatchers(HttpMethod.DELETE, "/api/matches/guides/{productId}").access("hasRole('ROLE_GUIDE')")
 
+                .antMatchers(HttpMethod.POST, "/api/histories/{historyId}").access("hasRole('ROLE_USER')")
+                .antMatchers(HttpMethod.GET, "/api/histories").access("hasRole('ROLE_USER')")
+                .antMatchers(HttpMethod.GET, "/api/histories/{historyId}").access("hasRole('ROLE_USER')")
+
 
                 .anyRequest().hasAnyRole("ROLE_ADMIN")
 //                .anyRequest().authenticated() // 나머지는 전부 인증 필요

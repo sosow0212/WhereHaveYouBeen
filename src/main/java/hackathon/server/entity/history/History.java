@@ -52,4 +52,8 @@ public class History extends EntityDate {
     public boolean isReviewed() {
         return reviewed;
     }
+
+    public void writeReview() {
+        this.reviewed = true;
+    }
 }

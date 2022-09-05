@@ -205,4 +205,14 @@ public class ExceptionAdvice {
         return Response.failure(409, "이미 리뷰를 작성하셨습니다.");
     }
 
+    // 409 응답
+    // 진행중인 거래로 인해 회원 탈퇴가 안될 때
+    @ExceptionHandler(MemberDoesntDeletedByMatchException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Response memberDoesntDeletedByMatchException() {
+        return Response.failure(409, "모든 거래를 마쳐야 회원 탈퇴가 가능합니다.");
+    }
+
+
+
 }

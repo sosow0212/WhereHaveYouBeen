@@ -54,21 +54,30 @@ public class Matching extends EntityDate {
     @Column(nullable = false)
     private boolean finishedByGuide;
 
+    @Column(nullable = false)
+    private boolean finished;
+
 
     public Matching(Member user, Member guide, Product product) {
         this.user = user;
         this.guide = guide;
         this.product = product;
         this.tempMoney = product.getPrice();
-        this.finishedByUser = this.finishedByGuide  = this.cancelledByUser = this.cancelledByGuide = false;
+        this.finishedByUser = this.finishedByGuide = this.cancelledByUser = this.cancelledByGuide = this.finished = false;
     }
 
     public void cancelMatchByUser() {
         this.cancelledByUser = true;
+        if(cancelledByGuide && cancelledByUser) {
+            this.finished = true;
+        }
     }
 
     public void cancelMatchByGuide() {
         this.cancelledByGuide = true;
+        if(cancelledByGuide && cancelledByUser) {
+            this.finished = true;
+        }
     }
 
     public boolean isCancelledMatch() {
@@ -77,10 +86,16 @@ public class Matching extends EntityDate {
 
     public void finishByUser() {
         this.finishedByUser = true;
+        if(finishedByUser && finishedByGuide) {
+            this.finished = true;
+        }
     }
 
     public void finishByGuide() {
         this.finishedByGuide = true;
+        if(finishedByUser && finishedByGuide) {
+            this.finished = true;
+        }
     }
 
     public boolean isFinishedMatch() {

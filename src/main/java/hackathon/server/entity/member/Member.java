@@ -2,15 +2,12 @@ package hackathon.server.entity.member;
 
 import hackathon.server.entity.common.EntityDate;
 import hackathon.server.entity.tag.Tag;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Getter
+@Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Member extends EntityDate {

@@ -8,10 +8,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TagRepository extends JpaRepository<Tag, Long> {
+
     List<Tag> findAllByMember(Member member);
     boolean existsByMember(Member member);
 
     boolean existsTagByMemberAndNameContaining(Member member, String name);
 
     void deleteTagByMemberAndNameContaining(Member member, String name);
+
+    List<Tag> findAllByCheckGuideTrue();
+    List<Tag> findAllByCheckGuideTrueAndName(String name);
 }

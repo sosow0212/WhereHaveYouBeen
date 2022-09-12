@@ -9,6 +9,7 @@ import hackathon.server.entity.product.Product;
 import hackathon.server.entity.tag.Tag;
 import hackathon.server.exception.MemberNotEqualsException;
 import hackathon.server.exception.ProductNotFoundException;
+import hackathon.server.repository.Member.MemberRepository;
 import hackathon.server.repository.product.ProductRepository;
 import hackathon.server.repository.tag.TagRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +19,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
+    private final TagRepository tagRepository;
 
     @Transactional
     public void createProduct(ProductCreateRequestDto req, Member member) {
@@ -36,6 +39,33 @@ public class ProductService {
         Page<Product> products = productRepository.findAll(pageable);
         List<ProductsResponseDto> res = new ArrayList<>();
         products.stream().forEach(i -> res.add(new ProductsResponseDto().toDto(i)));
+        return res;
+    }
+
+//    @Transactional(readOnly = true)
+//    public List<ProductsResponseDto> findProductsByTags(List<String> selectedTags, Member member) {
+//        selectedTags
+//    }
+
+    @Transactional(readOnly = true)
+    public List<ProductsResponseDto> findRecommendsProduct(Member member) {
+        List<Tag> tags = member.getTags();
+        HashSet<Product> products = new HashSet<>();
+        HashSet<Tag> allGuidesTags = new HashSet<>();
+
+        for (Tag userTag : tags) {
+            List<Tag> temp = tagRepository.findAllByCheckGuideTrueAndName(userTag.getName());
+            temp.forEach(tag -> allGuidesTags.add(tag));
+        }
+
+        for (Tag guideTag : allGuidesTags) {
+            List<Product> temp = productRepository.findAllByGuide(guideTag.getMember());
+            temp.forEach(product -> products.add(product));
+        }
+
+        List<ProductsResponseDto> res = new ArrayList<>();
+        products.forEach(product -> res.add(new ProductsResponseDto().toDto(product)));
+
         return res;
     }
 

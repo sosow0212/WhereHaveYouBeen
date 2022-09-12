@@ -6,7 +6,9 @@ import hackathon.server.dto.product.ProductResponseDto;
 import hackathon.server.dto.product.ProductsResponseDto;
 import hackathon.server.entity.member.Member;
 import hackathon.server.entity.product.Product;
+import hackathon.server.entity.tag.Tag;
 import hackathon.server.repository.product.ProductRepository;
+import hackathon.server.repository.tag.TagRepository;
 import hackathon.server.service.product.ProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,11 +18,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static hackathon.server.factory.MemberFactory.createGuide;
+import static hackathon.server.factory.MemberFactory.createUser;
 import static hackathon.server.factory.ProductFactory.createProduct;
+import static hackathon.server.factory.TagFactory.createTag;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -34,6 +39,9 @@ public class ProductServiceUnitTest {
 
     @Mock
     ProductRepository productRepository;
+
+    @Mock
+    TagRepository tagRepository;
 
     @Test
     @DisplayName("상품등록")
@@ -82,6 +90,33 @@ public class ProductServiceUnitTest {
 
         // then
         assertThat(result.get(0).getTitle()).isEqualTo(createProduct(createGuide()).getTitle());
+    }
+
+    @Test
+    @DisplayName("사용자 태그 맞춤 상품 조회")
+    public void findRecommendsProductTest() {
+        // given
+        Member user = createUser();
+        Member guide = createGuide();
+
+        List<Tag> userTags = new ArrayList<>();
+        userTags.add(createTag(user));
+        user.setTags(userTags);
+
+        List<Tag> temp = new ArrayList<>();
+        temp.add(createTag(guide));
+
+        List<Product> products = new ArrayList<>();
+        products.add(createProduct(guide));
+
+        given(tagRepository.findAllByCheckGuideTrueAndName(createTag(guide).getName())).willReturn(temp);
+        given(productRepository.findAllByGuide(guide)).willReturn(products);
+
+        // when
+        List<ProductsResponseDto> result = productService.findRecommendsProduct(user);
+
+        // then
+        assertThat(result.size()).isEqualTo(1);
     }
 
     @Test

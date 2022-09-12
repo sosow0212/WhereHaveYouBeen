@@ -92,6 +92,24 @@ public class ProductControllerUnitTest {
     }
 
     @Test
+    @DisplayName("사용자 태그 맞춤 상품 조회")
+    public void findRecommendsProductTest() throws Exception {
+        // given
+        Member member = createGuide();
+        Authentication authentication = new UsernamePasswordAuthenticationToken(member.getId(), "", Collections.emptyList());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        given(memberRepository.findByUsername(authentication.getName())).willReturn(Optional.of(member));
+
+        // when
+        mockMvc.perform(
+                get("/api/products/recommends")
+        ).andExpect(status().isOk());
+
+        // then
+        verify(productService).findRecommendsProduct(member);
+    }
+
+    @Test
     @DisplayName("상품 상세 조회")
     public void findProduct() throws Exception {
         // given

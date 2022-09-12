@@ -87,7 +87,7 @@ public class TagServiceUnitTest {
         given(tagRepository.existsByMember(any())).willReturn(false);
 
         // when
-        tagService.tagUpload(req, any());
+        tagService.tagUpload(req, member);
 
         // then
         verify(tagRepository).saveAll(any());

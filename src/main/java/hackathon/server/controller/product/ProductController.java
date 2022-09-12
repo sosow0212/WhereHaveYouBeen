@@ -48,21 +48,20 @@ public class ProductController {
         return Response.success(productService.findProducts(pageable));
     }
 
-//    @ApiOperation(value = "태그별 상품 조회", notes = "선택한 태그를 바탕으로 검색합니다.")
-//    @GetMapping("/products")
-//    @ResponseStatus(HttpStatus.OK)
-//    public Response findProductsByTags(@RequestParam List<String> selectedTags) {
-//        // http://localhost:8080/products?tag=tag1,tag2,tag3
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        Member member = memberRepository.findByUsername(authentication.getName()).orElseThrow(MemberNotFoundException::new);
-//        return Response.success(productService.findProductsByTags(selectedTags, member));
-//    }
+    @ApiOperation(value = "태그별 상품 조회", notes = "선택한 태그를 바탕으로 검색합니다.")
+    @GetMapping("/products/search")
+    @ResponseStatus(HttpStatus.OK)
+    public Response findProductsByTags(@RequestParam List<String> tags) {
+        // http://localhost:8080/products?tag=tag1,tag2,tag3
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = memberRepository.findByUsername(authentication.getName()).orElseThrow(MemberNotFoundException::new);
+        return Response.success(productService.findProductsByTags(tags, member));
+    }
 
     @ApiOperation(value = "사용자 태그 맞춤 상품 조회", notes = "사용자의 태그를 바탕으로 검색합니다.")
     @GetMapping("/products/recommends")
     @ResponseStatus(HttpStatus.OK)
     public Response findProductsByTags() {
-        // http://localhost:8080/products/recommends
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = memberRepository.findByUsername(authentication.getName()).orElseThrow(MemberNotFoundException::new);
         return Response.success(productService.findRecommendsProduct(member));

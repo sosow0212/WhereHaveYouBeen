@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -42,10 +43,26 @@ public class ProductService {
         return res;
     }
 
-//    @Transactional(readOnly = true)
-//    public List<ProductsResponseDto> findProductsByTags(List<String> selectedTags, Member member) {
-//        selectedTags
-//    }
+    @Transactional(readOnly = true)
+    public List<ProductsResponseDto> findProductsByTags(List<String> selectedTags, Member member) {
+        HashSet<Tag> tagsWithRoleGuide = new HashSet<>();
+
+        for(String tagName : selectedTags) {
+            List<Tag> tagTemp = tagRepository.findAllByCheckGuideTrueAndName(tagName);
+            tagTemp.stream().forEach(tag -> tagsWithRoleGuide.add(tag));
+        }
+
+        List<Product> products = new ArrayList<>();
+        for (Tag tagWithRoleGuide : tagsWithRoleGuide) {
+            List<Product> temp = productRepository.findAllByGuide(tagWithRoleGuide.getMember());
+            temp.forEach(product -> products.add(product));
+        }
+
+        List<ProductsResponseDto> res = new ArrayList<>();
+        products.forEach(product -> res.add(new ProductsResponseDto().toDto(product)));
+
+        return res;
+    }
 
     @Transactional(readOnly = true)
     public List<ProductsResponseDto> findRecommendsProduct(Member member) {

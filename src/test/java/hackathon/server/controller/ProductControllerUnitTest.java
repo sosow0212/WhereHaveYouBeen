@@ -26,12 +26,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 import static hackathon.server.factory.MemberFactory.createGuide;
+import static hackathon.server.factory.MemberFactory.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -89,6 +92,26 @@ public class ProductControllerUnitTest {
 
         // when, then
         assertThat(result).isEqualTo(null);
+    }
+
+    @Test
+    @DisplayName("선택한 태그를 바탕으로 상품 검색")
+    public void findProductsByTags() throws Exception {
+        // given
+        Member member = createGuide();
+        Authentication authentication = new UsernamePasswordAuthenticationToken(member.getId(), "", Collections.emptyList());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        given(memberRepository.findByUsername(authentication.getName())).willReturn(Optional.of(member));
+
+        List<String> values = Arrays.asList("tag1", "tag2", "tag3");
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.addAll("tags", values);
+
+        // when, then
+        mockMvc.perform(
+                get("/api/products/search")
+                        .params(params)
+        ).andExpect(status().isOk());
     }
 
     @Test

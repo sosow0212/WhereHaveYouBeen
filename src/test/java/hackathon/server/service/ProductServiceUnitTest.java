@@ -93,6 +93,32 @@ public class ProductServiceUnitTest {
     }
 
     @Test
+    @DisplayName("선택한 태그를 바탕으로 상품 검색")
+    public void findProductsByTags() {
+        // given
+        List<String> selectedTags = List.of("a");
+
+        Member user = createUser();
+        Member guide = createGuide();
+
+        List<Tag> tagTemp = new ArrayList<>();
+        tagTemp.add(createTag(guide));
+        guide.setTags(tagTemp);
+
+        List<Product> temp = new ArrayList<>();
+        temp.add(createProduct(guide));
+
+        given(tagRepository.findAllByCheckGuideTrueAndName(createTag(guide).getName())).willReturn(tagTemp);
+        given(productRepository.findAllByGuide(guide)).willReturn(temp);
+
+        // when
+        List<ProductsResponseDto> result = productService.findProductsByTags(selectedTags, user);
+
+        // then
+        assertThat(result.size()).isEqualTo(1);
+    }
+
+    @Test
     @DisplayName("사용자 태그 맞춤 상품 조회")
     public void findRecommendsProductTest() {
         // given

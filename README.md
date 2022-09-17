@@ -49,9 +49,11 @@ Data / ML : [허찬영]()
 
 # 4. API
 - Auth
+- Member
 - Tag
 - Product
 - Match
+- History
 ---
 
 # 5. version

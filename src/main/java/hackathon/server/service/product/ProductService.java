@@ -4,12 +4,13 @@ import hackathon.server.dto.product.ProductCreateRequestDto;
 import hackathon.server.dto.product.ProductEditRequestDto;
 import hackathon.server.dto.product.ProductResponseDto;
 import hackathon.server.dto.product.ProductsResponseDto;
+import hackathon.server.entity.likes.Likes;
 import hackathon.server.entity.member.Member;
 import hackathon.server.entity.product.Product;
 import hackathon.server.entity.tag.Tag;
 import hackathon.server.exception.MemberNotEqualsException;
 import hackathon.server.exception.ProductNotFoundException;
-import hackathon.server.repository.Member.MemberRepository;
+import hackathon.server.repository.likes.LikesRepository;
 import hackathon.server.repository.product.ProductRepository;
 import hackathon.server.repository.tag.TagRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -28,6 +28,7 @@ import java.util.List;
 public class ProductService {
     private final ProductRepository productRepository;
     private final TagRepository tagRepository;
+    private final LikesRepository likesRepository;
 
     @Transactional
     public void createProduct(ProductCreateRequestDto req, Member member) {
@@ -114,5 +115,20 @@ public class ProductService {
         }
 
         productRepository.delete(product);
+    }
+
+    @Transactional
+    public void likeProduct(Long id, Member member) {
+        Product product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
+
+        if(likesRepository.findByMemberAndProduct(member, product).isPresent()) {
+            // 이미 값이 존재하면 좋아요 취소
+            Likes likes = likesRepository.findByMemberAndProduct(member, product).get();
+            likesRepository.delete(likes);
+        } else {
+            // 좋아요 처리 한 적이 없다면 좋아요 처리
+            likesRepository.save(new Likes(member, product));
+        }
+
     }
 }

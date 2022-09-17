@@ -93,4 +93,14 @@ public class ProductController {
         productService.deleteProduct(id, member);
         return Response.success();
     }
+
+    @ApiOperation(value = "상품 좋아요 및 취소", notes = "상품을 좋아요 및 취소 처리를합니다.")
+    @PostMapping("/products/{id}/likes")
+    @ResponseStatus(HttpStatus.OK)
+    public Response likeProduct(@ApiParam(value = "게시글 id", required = true) @PathVariable("id") Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = memberRepository.findByUsername(authentication.getName()).orElseThrow(MemberNotFoundException::new);
+        productService.likeProduct(id, member);
+        return Response.success();
+    }
 }

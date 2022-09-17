@@ -89,6 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/products/{id}").access("hasRole('ROLE_USER') or hasRole('ROLE_GUIDE') or hasRole('ROLE_ADMIN')")
                 .antMatchers(HttpMethod.PUT, "/api/products/{id}").access("hasRole('ROLE_GUIDE')")
                 .antMatchers(HttpMethod.DELETE, "/api/products/{id}").access("hasRole('ROLE_GUIDE')")
+                .antMatchers(HttpMethod.POST, "/api/products/{id}/likes").access("hasRole('ROLE_USER')")
 
                 .antMatchers(HttpMethod.POST, "/api/matches/{productId}").access("hasRole('ROLE_USER')")
                 .antMatchers(HttpMethod.POST, "/api/matches/users/{productId}").access("hasRole('ROLE_USER')")
@@ -103,7 +104,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/members").access("hasRole('ROLE_USER') or hasRole('ROLE_GUIDE') or hasRole('ROLE_ADMIN')")
                 .antMatchers(HttpMethod.PUT, "/api/members").access("hasRole('ROLE_USER') or hasRole('ROLE_GUIDE') or hasRole('ROLE_ADMIN')")
                 .antMatchers(HttpMethod.DELETE, "/api/members").access("hasRole('ROLE_USER') or hasRole('ROLE_GUIDE') or hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.GET, "/api/members/trips").access("hasRole('ROLE_USER') or hasRole('ROLE_GUIDE') or hasRole('ROLE_ADMIN')")
+                .antMatchers(HttpMethod.GET, "/api/members/trips").access("hasRole('ROLE_USER')")
+                .antMatchers(HttpMethod.GET, "/api/members/likes").access("hasRole('ROLE_USER')")
 
 
                 .anyRequest().hasAnyRole("ROLE_ADMIN")

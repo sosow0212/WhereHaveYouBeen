@@ -62,4 +62,14 @@ public class MemberController {
         Member member = memberRepository.findByUsername(authentication.getName()).orElseThrow(MemberNotFoundException::new);
         return Response.success(memberService.getTrips(member));
     }
+
+    @ApiOperation(value = "좋아요 한 상품 확인", notes = "좋아요 한 상품을 확인합니다.")
+    @GetMapping("/members/likes")
+    @ResponseStatus(HttpStatus.OK)
+    public Response getLikes() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = memberRepository.findByUsername(authentication.getName()).orElseThrow(MemberNotFoundException::new);
+        return Response.success(memberService.getLikes(member));
+    }
+
 }

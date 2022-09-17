@@ -1,14 +1,17 @@
 package hackathon.server.service.member;
 
+import hackathon.server.dto.like.LikeResponseDto;
 import hackathon.server.dto.member.MemberEditRequestDto;
 import hackathon.server.dto.member.MemberResponseDto;
 import hackathon.server.dto.member.MemberTripsResponseDto;
+import hackathon.server.entity.likes.Likes;
 import hackathon.server.entity.matching.Matching;
 import hackathon.server.entity.member.Member;
 import hackathon.server.exception.MemberDoesntDeletedByMatchException;
 import hackathon.server.exception.MemberNicknameAlreadyExistsException;
 import hackathon.server.exception.MemberPhoneAlreadyExistsException;
 import hackathon.server.repository.Member.MemberRepository;
+import hackathon.server.repository.likes.LikesRepository;
 import hackathon.server.repository.match.MatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,7 @@ public class MemberService {
 
     public final MemberRepository memberRepository;
     public final MatchRepository matchRepository;
+    public final LikesRepository likesRepository;
 
     @Transactional(readOnly = true)
     public MemberResponseDto getMember(Member member) {
@@ -66,6 +70,15 @@ public class MemberService {
         List<MemberTripsResponseDto> result = new ArrayList<>();
 
         memberTrips.stream().forEach(i -> result.add(new MemberTripsResponseDto().toDto(i)));
+        return result;
+    }
+
+    @Transactional(readOnly = true)
+    public List<LikeResponseDto> getLikes(Member member) {
+        List<Likes> likes = likesRepository.findAllByMember(member);
+        List<LikeResponseDto> result = new ArrayList<>();
+
+        likes.stream().forEach(like -> result.add(new LikeResponseDto().toDto(like)));
         return result;
     }
 }

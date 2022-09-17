@@ -4,9 +4,11 @@ import hackathon.server.dto.product.ProductCreateRequestDto;
 import hackathon.server.dto.product.ProductEditRequestDto;
 import hackathon.server.dto.product.ProductResponseDto;
 import hackathon.server.dto.product.ProductsResponseDto;
+import hackathon.server.entity.likes.Likes;
 import hackathon.server.entity.member.Member;
 import hackathon.server.entity.product.Product;
 import hackathon.server.entity.tag.Tag;
+import hackathon.server.repository.likes.LikesRepository;
 import hackathon.server.repository.product.ProductRepository;
 import hackathon.server.repository.tag.TagRepository;
 import hackathon.server.service.product.ProductService;
@@ -42,6 +44,9 @@ public class ProductServiceUnitTest {
 
     @Mock
     TagRepository tagRepository;
+
+    @Mock
+    LikesRepository likesRepository;
 
     @Test
     @DisplayName("상품등록")
@@ -176,5 +181,44 @@ public class ProductServiceUnitTest {
 
         // then
         verify(productRepository).delete(any());
+    }
+
+    @Test
+    @DisplayName("상품 좋아요 및 취소 (좋아요가 없는 경우)")
+    public void likeProductTest() {
+        // given
+        Long id = 1L;
+        Member member = createUser();
+        Member guide = createGuide();
+        Product product = createProduct(guide);
+
+        given(productRepository.findById(id)).willReturn(Optional.of(product));
+        given(likesRepository.findByMemberAndProduct(member, product)).willReturn(Optional.empty());
+
+        // when
+        productService.likeProduct(id, member);
+
+        // then
+        verify(likesRepository).save(new Likes(member, product));
+    }
+
+    @Test
+    @DisplayName("상품 좋아요 및 취소 (좋아요가 이미 있는 경우)")
+    public void likeProductAlreadyLikeExistTest() {
+        // given
+        Long id = 1L;
+        Member member = createUser();
+        Member guide = createGuide();
+        Product product = createProduct(guide);
+        Likes likes = new Likes(member, product);
+
+        given(productRepository.findById(id)).willReturn(Optional.of(product));
+        given(likesRepository.findByMemberAndProduct(member, product)).willReturn(Optional.of(likes));
+
+        // when
+        productService.likeProduct(id, member);
+
+        // then
+        verify(likesRepository).delete(likes);
     }
 }

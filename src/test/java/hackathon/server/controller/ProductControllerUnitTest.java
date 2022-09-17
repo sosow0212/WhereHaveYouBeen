@@ -36,6 +36,7 @@ import static hackathon.server.factory.MemberFactory.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -187,5 +188,24 @@ public class ProductControllerUnitTest {
 
         // then
         verify(productService).deleteProduct(id, member);
+    }
+
+    @Test
+    @DisplayName("상품 좋아요 및 취소")
+    public void likeProduct() throws Exception {
+        // given
+        Long id = 1L;
+        Member member = createGuide();
+        Authentication authentication = new UsernamePasswordAuthenticationToken(member.getId(), "", Collections.emptyList());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        given(memberRepository.findByUsername(authentication.getName())).willReturn(Optional.of(member));
+
+        // when
+        mockMvc.perform(
+                post("/api/products/{id}/likes", id)
+        ).andExpect(status().isOk());
+
+        // then
+        verify(productService).likeProduct(id, member);
     }
 }

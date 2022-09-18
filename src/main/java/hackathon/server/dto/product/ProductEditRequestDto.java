@@ -1,15 +1,16 @@
 package hackathon.server.dto.product;
 
-import hackathon.server.entity.member.Member;
-import hackathon.server.entity.product.Product;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,5 +36,11 @@ public class ProductEditRequestDto {
     @ApiModelProperty(value = "매칭 타입(온/오프라인)", notes = "체크 = 온라인, 체크x(기본 값) = 오프라인", required = true ,example = "체크 == 온라인")
     @NotNull(message = "온라인 혹은 오프라인 매칭인지 체크를 해주세요.")
     private Boolean isOnline;
+
+    @ApiModelProperty(value = "추가된 이미지", notes = "추가된 이미지를 첨부해주세요.")
+    private List<MultipartFile> addedImages = new ArrayList<>();
+
+    @ApiModelProperty(value = "제거된 이미지 아이디", notes = "제거된 이미지 아이디를 입력해주세요.")
+    private List<Integer> deletedImages = new ArrayList<>();
 
 }

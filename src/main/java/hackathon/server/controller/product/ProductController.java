@@ -33,7 +33,7 @@ public class ProductController {
     @ApiOperation(value = "상품 등록", notes = "상품을 등록합니다.")
     @PostMapping("/products")
     @ResponseStatus(HttpStatus.CREATED)
-    public Response createProduct(@Valid @RequestBody ProductCreateRequestDto productCreateRequestDto) {
+    public Response createProduct(@Valid @ModelAttribute ProductCreateRequestDto productCreateRequestDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = memberRepository.findByUsername(authentication.getName()).orElseThrow(MemberNotFoundException::new);
         productService.createProduct(productCreateRequestDto, member);
@@ -77,7 +77,7 @@ public class ProductController {
     @ApiOperation(value = "상품 수정", notes = "상품을 수정합니다.")
     @PutMapping("/products/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Response editProduct(@ApiParam(value = "게시글 id", required = true) @PathVariable("id") Long id, @Valid @RequestBody ProductEditRequestDto productEditRequestDto) {
+    public Response editProduct(@ApiParam(value = "게시글 id", required = true) @PathVariable("id") Long id, @Valid @ModelAttribute ProductEditRequestDto productEditRequestDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = memberRepository.findByUsername(authentication.getName()).orElseThrow(MemberNotFoundException::new);
         productService.editProduct(id, productEditRequestDto, member);

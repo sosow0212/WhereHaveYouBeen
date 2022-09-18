@@ -1,15 +1,19 @@
 package hackathon.server.dto.product;
 
 import hackathon.server.entity.member.Member;
+import hackathon.server.entity.product.Image;
 import hackathon.server.entity.product.Product;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -36,7 +40,10 @@ public class ProductCreateRequestDto {
     @NotNull(message = "온라인 혹은 오프라인 매칭인지 체크를 해주세요.")
     private Boolean isOnline;
 
-    public Product toDto(ProductCreateRequestDto req, Member member) {
+    @ApiModelProperty(value = "이미지", notes = "이미지를 첨부해주세요.")
+    private List<MultipartFile> images = new ArrayList<>();
+
+    public Product toDto(ProductCreateRequestDto req, Member member, List<Image> images) {
         return Product.builder()
                 .title(req.title)
                 .content(req.content)
@@ -44,6 +51,7 @@ public class ProductCreateRequestDto {
                 .price(req.price)
                 .isOnline(req.isOnline)
                 .guide(member)
+                .images(images)
                 .build();
     }
 

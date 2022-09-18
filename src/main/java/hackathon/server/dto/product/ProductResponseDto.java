@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,9 +23,10 @@ public class ProductResponseDto {
     private String place;
     private int price;
     private boolean isOnline;
+    private List<ImageDto> images;
     private LocalDateTime createdAt;
 
     public ProductResponseDto toDto(Product product) {
-        return new ProductResponseDto(product.getId(), new MemberSimpleResponseDto().toDto(product.getGuide()), product.getGuide().getTags(), product.getTitle(), product.getContent(), product.getPlace(), product.getPrice(), product.isOnline(), product.getCreatedAt());
+        return new ProductResponseDto(product.getId(), new MemberSimpleResponseDto().toDto(product.getGuide()), product.getGuide().getTags(), product.getTitle(), product.getContent(), product.getPlace(), product.getPrice(), product.isOnline(), product.getImages().stream().map(i -> ImageDto.toDto(i)).collect(Collectors.toList()) ,product.getCreatedAt());
     }
 }

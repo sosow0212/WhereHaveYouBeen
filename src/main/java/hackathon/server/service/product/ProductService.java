@@ -6,6 +6,7 @@ import hackathon.server.dto.product.ProductResponseDto;
 import hackathon.server.dto.product.ProductsResponseDto;
 import hackathon.server.entity.likes.Likes;
 import hackathon.server.entity.member.Member;
+import hackathon.server.entity.product.Image;
 import hackathon.server.entity.product.Product;
 import hackathon.server.entity.tag.Tag;
 import hackathon.server.exception.MemberNotEqualsException;
@@ -13,15 +14,20 @@ import hackathon.server.exception.ProductNotFoundException;
 import hackathon.server.repository.likes.LikesRepository;
 import hackathon.server.repository.product.ProductRepository;
 import hackathon.server.repository.tag.TagRepository;
+import hackathon.server.service.file.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 @Service
@@ -29,11 +35,13 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final TagRepository tagRepository;
     private final LikesRepository likesRepository;
+    private final FileService fileService;
 
     @Transactional
     public void createProduct(ProductCreateRequestDto req, Member member) {
-        Product product = req.toDto(req, member);
-        productRepository.save(product);
+        List<Image> images = req.getImages().stream().map(i -> new Image(i.getOriginalFilename())).collect(toList());
+        Product product = productRepository.save(new Product(member, req.getTitle(), req.getContent(), req.getPlace(), req.getPrice(), req.getIsOnline(), images));
+        uploadImages(product.getImages(), req.getImages());
     }
 
     @Transactional(readOnly = true)
@@ -100,11 +108,9 @@ public class ProductService {
             throw new MemberNotEqualsException();
         }
 
-        product.setTitle(req.getTitle());
-        product.setContent(req.getContent());
-        product.setPlace(req.getPlace());
-        product.setPrice(req.getPrice());
-        product.setOnline(req.getIsOnline());
+        Product.ImageUpdatedResult result = product.update(req);
+        uploadImages(result.getAddedImages(), result.getAddedImageFiles());
+        deleteImages(result.getDeletedImages());
     }
 
     @Transactional
@@ -129,6 +135,13 @@ public class ProductService {
             // 좋아요 처리 한 적이 없다면 좋아요 처리
             likesRepository.save(new Likes(member, product));
         }
+    }
 
+    private void uploadImages(List<Image> images, List<MultipartFile> fileImages) {
+        IntStream.range(0, images.size()).forEach(i -> fileService.upload(fileImages.get(i), images.get(i).getUniqueName()));
+    }
+
+    private void deleteImages(List<Image> images) {
+        images.stream().forEach(i -> fileService.delete(i.getUniqueName()));
     }
 }

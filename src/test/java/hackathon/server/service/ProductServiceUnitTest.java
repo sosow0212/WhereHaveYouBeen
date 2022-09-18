@@ -11,6 +11,7 @@ import hackathon.server.entity.tag.Tag;
 import hackathon.server.repository.likes.LikesRepository;
 import hackathon.server.repository.product.ProductRepository;
 import hackathon.server.repository.tag.TagRepository;
+import hackathon.server.service.file.FileService;
 import hackathon.server.service.product.ProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,15 +20,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
+import static hackathon.server.factory.ImageFactory.createImage;
 import static hackathon.server.factory.MemberFactory.createGuide;
 import static hackathon.server.factory.MemberFactory.createUser;
 import static hackathon.server.factory.ProductFactory.createProduct;
+import static hackathon.server.factory.ProductFactory.createProductWithImages;
 import static hackathon.server.factory.TagFactory.createTag;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -48,13 +55,25 @@ public class ProductServiceUnitTest {
     @Mock
     LikesRepository likesRepository;
 
+    @Mock
+    FileService fileService;
+
     @Test
     @DisplayName("상품등록")
     public void createProductTest() {
         // given
-        ProductCreateRequestDto req = new ProductCreateRequestDto("제목", "내용", "지역", 100, true);
+        ProductCreateRequestDto req = new ProductCreateRequestDto("제목", "내용", "지역", 100, true, List.of(
+                new MockMultipartFile("test1", "test1.PNG", MediaType.IMAGE_PNG_VALUE, "test1".getBytes()),
+                new MockMultipartFile("test2", "test2.PNG", MediaType.IMAGE_PNG_VALUE, "test2".getBytes()),
+                new MockMultipartFile("test3", "test3.PNG", MediaType.IMAGE_PNG_VALUE, "test3".getBytes())
+        ));
+
+
         Member member = createGuide();
-        Product product = req.toDto(req, member);
+
+        given(productRepository.save(any())).willReturn(createProductWithImages(
+                createGuide(), IntStream.range(0, req.getImages().size()).mapToObj(i -> createImage()).collect(toList()))
+        );
 
         // when
         productService.createProduct(req, member);
@@ -68,7 +87,11 @@ public class ProductServiceUnitTest {
     public void editProductTest() {
         // given
         Long id = 1L;
-        ProductEditRequestDto req = new ProductEditRequestDto("제목2", "내용2", "지역", 100, true);
+        ProductEditRequestDto req = new ProductEditRequestDto("제목2", "내용2", "지역", 100, true, List.of(
+                new MockMultipartFile("test1", "test1.PNG", MediaType.IMAGE_PNG_VALUE, "test1".getBytes()),
+                new MockMultipartFile("test2", "test2.PNG", MediaType.IMAGE_PNG_VALUE, "test2".getBytes()),
+                new MockMultipartFile("test3", "test3.PNG", MediaType.IMAGE_PNG_VALUE, "test3".getBytes())
+        ), List.of(1, 2));
         Member member = createGuide();
         Product product = createProduct(member);
         given(productRepository.findById(id)).willReturn(Optional.of(product));

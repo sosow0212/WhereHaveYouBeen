@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,6 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -55,6 +58,7 @@ public class ProductControllerUnitTest {
     @Mock
     ProductRepository productRepository;
 
+
     MockMvc mockMvc;
     ObjectMapper objectMapper = new ObjectMapper();
 
@@ -67,21 +71,39 @@ public class ProductControllerUnitTest {
     @DisplayName("상품 등록")
     public void createProductTest() throws Exception {
         // given
+        ArgumentCaptor<ProductCreateRequestDto> productCreateRequestDtoArgumentCaptor = ArgumentCaptor.forClass(ProductCreateRequestDto.class);
+        List<MultipartFile> imageFiles = List.of(
+                new MockMultipartFile("test1", "test1.PNG", MediaType.IMAGE_PNG_VALUE, "test1".getBytes()),
+                new MockMultipartFile("test2", "test2.PNG", MediaType.IMAGE_PNG_VALUE, "test2".getBytes())
+        );
+        ProductCreateRequestDto req = new ProductCreateRequestDto("제목", "내용", "지역", 100, true, imageFiles);
+
         Member member = createGuide();
         Authentication authentication = new UsernamePasswordAuthenticationToken(member.getId(), "", Collections.emptyList());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        ProductCreateRequestDto req = new ProductCreateRequestDto("제목", "내용", "지역", 100, true);
+
         given(memberRepository.findByUsername(authentication.getName())).willReturn(Optional.of(member));
 
         // when
         mockMvc.perform(
-                post("/api/products")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req))
-        ).andExpect(status().isCreated());
+                        multipart("/api/products")
+                                .file("images", imageFiles.get(0).getBytes())
+                                .file("images", imageFiles.get(1).getBytes())
+                                .param("title", req.getTitle())
+                                .param("content", req.getContent())
+                                .param("place", req.getPlace())
+                                .param("price", String.valueOf(req.getPrice()))
+                                .param("isOnline", String.valueOf(req.getIsOnline()))
+                                .with(requestPostProcessor -> {
+                                    requestPostProcessor.setMethod("POST");
+                                    return requestPostProcessor;
+                                })
+                                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isCreated());
 
         // then
-        verify(productService).createProduct(req, member);
+        assertThat(req.getImages().size()).isEqualTo(2);
+
     }
 
     @Test
@@ -153,21 +175,40 @@ public class ProductControllerUnitTest {
     public void editProduct() throws Exception {
         // given
         Long id = 1L;
+
         Member member = createGuide();
         Authentication authentication = new UsernamePasswordAuthenticationToken(member.getId(), "", Collections.emptyList());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        ProductEditRequestDto req = new ProductEditRequestDto("제목2", "내용2", "지역", 100, true);
+
+        List<MultipartFile> addedImages = List.of(
+                new MockMultipartFile("test1", "test1.PNG", MediaType.IMAGE_PNG_VALUE, "test1".getBytes()),
+                new MockMultipartFile("test2", "test2.PNG", MediaType.IMAGE_PNG_VALUE, "test2".getBytes())
+        );
+        List<Integer> deletedImages = List.of(1, 2);
+
+        ProductEditRequestDto req = new ProductEditRequestDto("제목2", "내용2", "지역", 100, true, addedImages, deletedImages);
         given(memberRepository.findByUsername(authentication.getName())).willReturn(Optional.of(member));
 
         // when
         mockMvc.perform(
-                put("/api/products/{id}", id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req))
-        ).andExpect(status().isOk());
+                        multipart("/api/products/{id}", 1L)
+                                .file("addedImages", addedImages.get(0).getBytes())
+                                .file("addedImages", addedImages.get(1).getBytes())
+                                .param("deletedImages", String.valueOf(deletedImages.get(0)), String.valueOf(deletedImages.get(1)))
+                                .param("title", req.getTitle())
+                                .param("content", req.getContent())
+                                .param("place", req.getPlace())
+                                .param("price", String.valueOf(req.getPrice()))
+                                .param("isOnline", String.valueOf(req.getIsOnline()))
+                                .with(requestPostProcessor -> {
+                                    requestPostProcessor.setMethod("PUT");
+                                    return requestPostProcessor;
+                                })
+                                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isOk());
 
         // then
-        verify(productService).editProduct(id, req, member);
+        assertThat(req.getAddedImages().size()).isEqualTo(2);
     }
 
     @Test
@@ -178,7 +219,6 @@ public class ProductControllerUnitTest {
         Member member = createGuide();
         Authentication authentication = new UsernamePasswordAuthenticationToken(member.getId(), "", Collections.emptyList());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        ProductEditRequestDto req = new ProductEditRequestDto("제목2", "내용2", "지역", 100, true);
         given(memberRepository.findByUsername(authentication.getName())).willReturn(Optional.of(member));
 
         // when

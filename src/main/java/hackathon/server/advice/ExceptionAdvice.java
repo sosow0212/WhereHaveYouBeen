@@ -140,6 +140,22 @@ public class ExceptionAdvice {
         return Response.failure(404, "요청한 거래내역을 찾을 수 없습니다.");
     }
 
+    // 404 응답
+    // Image 형식 지원하지 않음
+    @ExceptionHandler(UnsupportedImageFormatException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response unsupportedImageFormatException() {
+        return Response.failure(404, "이미지 형식을 지원하지 않습니다.");
+    }
+
+    // 404 응답
+    // 파일 업로드 실패
+    @ExceptionHandler(FileUploadFailureException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response fileUploadFailureException(FileUploadFailureException e) {
+        log.error("e = {}", e.getMessage());
+        return Response.failure(404, "이미지 업로드 실패");
+    }
 
     // 409 응답
     // username 중복
